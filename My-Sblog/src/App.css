@@ -1,0 +1,35 @@
+body {
+  background-color: aliceblue;
+}
+
+.navbar {
+  border: solid 5px rebeccapurple;
+}
+
+.blog {
+  border: 4px solid yellow;
+}
+
+.blogposts {
+  border: 3px solid green;
+}
+
+.addpost {
+  border: 5px solid orange;
+}
+
+h1 {
+  text-align: center;
+}
+
+.addpostForm {
+  border: 4px solid blue;
+}
+
+h4 {
+  color: blue;
+}
+
+.comments {
+  border: solid pink;
+}
