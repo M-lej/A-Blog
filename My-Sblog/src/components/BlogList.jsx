@@ -1,55 +1,98 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 import { BlogContext } from "../context/BlogContext";
 import { UserContext } from "../context/UserContext";
 
 function BlogList() {
-  const { blogPosts, editBlogPost, deleteBlogPost, addComment } =
-    useContext(BlogContext);
+  const { blogs, editBlog, deleteBlog, addComment } = useContext(BlogContext);
   const { user } = useContext(UserContext);
+  const [editPost, setEditPost] = useState(null);
+  const [newTitle, setNewTitle] = useState("");
+  const [newContent, setNewContent] = useState("");
   const [comment, setComment] = useState("");
 
-  const handleCommentSubmit = (e, postId) => {
-    e.preventDefault();
-    addComment(postId, user.username, comment);
-    setComment("");
+  const handleEdit = (id, title, content) => {
+    setEditPost(id);
+    setNewTitle(title);
+    setNewContent(content);
+  };
+
+  const handleSave = (id) => {
+    editBlog(id, newTitle, newContent, user.username);
+    setEditPost(null);
+    setNewTitle("");
+    setNewContent("");
+  };
+
+  const handleDelete = (id) => {
+    deleteBlog(id, user.username);
+  };
+
+  const handleAddComment = (id) => {
+    if (comment) {
+      addComment(id, comment, user.username);
+      setComment("");
+    }
   };
 
   return (
-    <div>
+    <div className="blogBox">
       <h2>Blog Posts</h2>
-      {blogPosts.map((post) => (
-        <div
-          key={post.id}
-          style={{
-            border: "1px solid #ccc",
-            padding: "10px",
-            marginBottom: "10px",
-          }}
-        >
-          <h3>{post.title}</h3>
-          <p>{post.content}</p>
-          <p>
-            <strong>Author:</strong> {post.author}
-          </p>
-          <button onClick={() => editBlogPost(post)}>Edit</button>
-          <button onClick={() => deleteBlogPost(post.id)}>Delete</button>
-
-          <h4>Comments</h4>
-          {post.comments.map((commentObj, index) => (
-            <p key={index}>
-              <strong>{commentObj.username}:</strong> {commentObj.comment}
-            </p>
-          ))}
-          <form onSubmit={(e) => handleCommentSubmit(e, post.id)}>
-            <input
-              type="text"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Write a comment"
-              required
-            />
-            <button type="submit">Add Comment</button>
-          </form>
+      {blogs.map((blog) => (
+        <div className="blogPost" key={blog.id}>
+          {editPost === blog.id ? (
+            <div>
+              <input
+                type="text"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+              />
+              <textarea
+                value={newContent}
+                onChange={(e) => setNewContent(e.target.value)}
+              />
+              <button onClick={() => handleSave(blog.id)}>Save</button>
+            </div>
+          ) : (
+            <div>
+              <h3>{blog.title}</h3>
+              <p>{blog.content}</p>
+              <p className="author">Author: {blog.author}</p>
+              {user.username === blog.author && (
+                <div className="editDeleteBtn">
+                  <button
+                    onClick={() =>
+                      handleEdit(blog.id, blog.title, blog.content)
+                    }
+                  >
+                    Edit
+                  </button>
+                  <button onClick={() => handleDelete(blog.id)}>Delete</button>
+                </div>
+              )}
+            </div>
+          )}
+          <div className="comments">
+            <h4>Comments</h4>
+            {blog.comments.map((comment, index) => (
+              <p key={index}>
+                <strong>{comment.username}</strong>: {comment.text}
+              </p>
+            ))}
+            <div className="commentForm">
+              <input
+                type="text"
+                placeholder="Add a comment"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+              <button
+                className="addCommentBtn"
+                onClick={() => handleAddComment(blog.id)}
+              >
+                Add Comment
+              </button>
+            </div>
+          </div>
         </div>
       ))}
     </div>

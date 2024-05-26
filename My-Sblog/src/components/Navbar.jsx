@@ -1,18 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
 function Navbar() {
-  const { user, login, logout } = useContext(UserContext);
-  const [username, setUsername] = useState("");
-
-  const handleLogin = () => {
-    login(username);
-    setUsername("");
-  };
+  const { user } = useContext(UserContext);
 
   return (
-    <nav>
+    <nav className="navbar">
       <ul>
         <li>
           <Link to="/">Home</Link>
@@ -23,25 +17,8 @@ function Navbar() {
         <li>
           <Link to="/newpost">New Post</Link>
         </li>
+        {user.username !== "Guest" && <li className="user">{user.username}</li>}
       </ul>
-      <div>
-        {user.username === "Guest" ? (
-          <>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
-            />
-            <button onClick={handleLogin}>Login</button>
-          </>
-        ) : (
-          <>
-            <span>Welcome, {user.username}</span>
-            <button onClick={logout}>Logout</button>
-          </>
-        )}
-      </div>
     </nav>
   );
 }

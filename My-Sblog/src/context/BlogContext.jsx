@@ -3,63 +3,60 @@ import React, { createContext, useState } from "react";
 export const BlogContext = createContext();
 
 export const BlogProvider = ({ children }) => {
-  const [blogPosts, setBlogPosts] = useState([
+  const [blogs, setBlogs] = useState([
     {
       id: 1,
       title: "First Post",
-      content: "This is my first blog post.",
-      author: "John Doe",
+      content: "This is the first post",
+      author: "Jane Doe",
       comments: [],
     },
     {
       id: 2,
       title: "Second Post",
-      content: "This is my second blog post.",
-      author: "Jane Doe",
+      content: "This is the second post",
+      author: "Joe Doe",
       comments: [],
     },
   ]);
 
-  const addBlogPost = (title, content, author) => {
-    setBlogPosts([
-      ...blogPosts,
-      { id: blogPosts.length + 1, title, content, author, comments: [] },
+  const addBlog = (title, content, author) => {
+    setBlogs([
+      ...blogs,
+      { id: Date.now(), title, content, author, comments: [] },
     ]);
   };
 
-  const editBlogPost = (id, updatedPost) => {
-    setBlogPosts(
-      blogPosts.map((post) => (post.id === id ? updatedPost : post))
+  const editBlog = (id, newTitle, newContent, author) => {
+    setBlogs(
+      blogs.map((blog) =>
+        blog.id === id && blog.author === author
+          ? { ...blog, title: newTitle, content: newContent }
+          : blog
+      )
     );
   };
 
-  const deleteBlogPost = (id) => {
-    setBlogPosts(blogPosts.filter((post) => post.id !== id));
+  const deleteBlog = (id, author) => {
+    setBlogs(blogs.filter((blog) => blog.id !== id || blog.author !== author));
   };
 
-  const addComment = (postId, username, comment) => {
-    setBlogPosts(
-      blogPosts.map((post) => {
-        if (post.id === postId) {
-          return {
-            ...post,
-            comments: [...post.comments, { username, comment }],
-          };
-        }
-        return post;
-      })
+  const addComment = (blogId, commentText, username) => {
+    setBlogs(
+      blogs.map((blog) =>
+        blog.id === blogId
+          ? {
+              ...blog,
+              comments: [...blog.comments, { text: commentText, username }],
+            }
+          : blog
+      )
     );
   };
 
   return (
     <BlogContext.Provider
-      value={{
-        blogPosts,
-        addBlogPost,
-        editBlogPost,
-        deleteBlogPost,
-        addComment,
-      }}
+      value={{ blogs, addBlog, editBlog, deleteBlog, addComment }}
     >
       {children}
     </BlogContext.Provider>

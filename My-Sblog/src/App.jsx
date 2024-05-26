@@ -1,10 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Home from "./components/Home";
-import Blog from "./components/Blog";
+import Home from "./pages/Home";
+import Blog from "./pages/Blog";
 import NewPost from "./pages/NewPost";
-
 import { BlogProvider } from "./context/BlogContext";
 import { UserProvider } from "./context/UserContext";
 

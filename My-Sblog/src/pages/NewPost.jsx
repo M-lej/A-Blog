@@ -1,54 +1,45 @@
-import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState } from "react";
 import { BlogContext } from "../context/BlogContext";
+import { UserContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 function NewPost() {
+  const { addBlog } = useContext(BlogContext);
+  const { user } = useContext(UserContext);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
-  const { addBlogPost } = useContext(BlogContext);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addBlogPost(title, content, author);
-    setTitle("");
-    setContent("");
-    setAuthor("");
-    navigate("/blog");
+    if (user.username !== "Guest") {
+      addBlog(title, content, user.username);
+      setTitle("");
+      setContent("");
+      navigate("/blog");
+    } else {
+      alert("You must be logged in to create a post.");
+    }
   };
 
   return (
-    <div>
-      <h2>Add New Blog Post</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Content</label>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          ></textarea>
-        </div>
-        <div>
-          <label>Author</label>
-          <input
-            type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Add Post</button>
+    <div className="newPostBox">
+      <h2 className="newPostTitle">Create a New Post</h2>
+      <form className="newPostForm" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          className="newPostInput"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <textarea
+          className="newPostContent"
+          placeholder="Content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+        <button type="submit" className="newPostButton">Add Post</button>
       </form>
     </div>
   );
