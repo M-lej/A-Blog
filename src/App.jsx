@@ -5,11 +5,11 @@ import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import NewPost from "./pages/NewPost";
 import { BlogProvider } from "./context/BlogContext";
-import { UserProvider } from "./context/UserContext";
+import { AuthProvider } from "./firebase/AuthContext";
 
 function App() {
   return (
-    <UserProvider>
+    <AuthProvider>
       <BlogProvider>
         <Router>
           <div>
@@ -22,7 +22,7 @@ function App() {
           </div>
         </Router>
       </BlogProvider>
-    </UserProvider>
+    </AuthProvider>
   );
 }
 

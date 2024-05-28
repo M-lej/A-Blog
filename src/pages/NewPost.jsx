@@ -1,19 +1,20 @@
 import React, { useContext, useState } from "react";
 import { BlogContext } from "../context/BlogContext";
-import { UserContext } from "../context/UserContext";
+import { useAuth } from "../firebase/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function NewPost() {
   const { addBlog } = useContext(BlogContext);
-  const { user } = useContext(UserContext);
+  const { currentUser, getUser } = useAuth();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (user.username !== "Guest") {
-      addBlog(title, content, user.username);
+    if (getUser) {
+      addBlog(title, content, currentUser.email);
       setTitle("");
       setContent("");
       navigate("/blog");
@@ -39,7 +40,9 @@ function NewPost() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
-        <button type="submit" className="newPostButton">Add Post</button>
+        <button type="submit" className="newPostBtn">
+          Add Post
+        </button>
       </form>
     </div>
   );

@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
 import { BlogContext } from "../context/BlogContext";
-import { UserContext } from "../context/UserContext";
+import { useAuth } from "../firebase/AuthContext";
 
 function BlogList() {
   const { blogs, editBlog, deleteBlog, addComment } = useContext(BlogContext);
-  const { user } = useContext(UserContext);
+  const { currentUser } = useAuth();
   const [editPost, setEditPost] = useState(null);
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
@@ -17,19 +17,19 @@ function BlogList() {
   };
 
   const handleSave = (id) => {
-    editBlog(id, newTitle, newContent, user.username);
+    editBlog(id, newTitle, newContent, currentUser.email);
     setEditPost(null);
     setNewTitle("");
     setNewContent("");
   };
 
   const handleDelete = (id) => {
-    deleteBlog(id, user.username);
+    deleteBlog(id, currentUser.email);
   };
 
   const handleAddComment = (id) => {
     if (comment) {
-      addComment(id, comment, user.username);
+      addComment(id, comment, currentUser.email);
       setComment("");
     }
   };
@@ -42,31 +42,55 @@ function BlogList() {
           {editPost === blog.id ? (
             <div>
               <input
+                className="newPostInput"
                 type="text"
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
               />
               <textarea
+                className="newPostInput"
                 value={newContent}
                 onChange={(e) => setNewContent(e.target.value)}
               />
-              <button onClick={() => handleSave(blog.id)}>Save</button>
+              <button
+                className="editDeleteBtn"
+                onClick={() => handleSave(blog.id)}
+              >
+                Save
+              </button>
             </div>
           ) : (
             <div>
-              <h3>{blog.title}</h3>
-              <p>{blog.content}</p>
-              <p className="author">Author: {blog.author}</p>
-              {user.username === blog.author && (
-                <div className="editDeleteBtn">
-                  <button
-                    onClick={() =>
-                      handleEdit(blog.id, blog.title, blog.content)
-                    }
-                  >
-                    Edit
-                  </button>
-                  <button onClick={() => handleDelete(blog.id)}>Delete</button>
+              {currentUser ? (
+                <div>
+                  <h3>{blog.title}</h3>
+                  <p>{blog.content}</p>
+                  <p className="author">Author: {blog.author}</p>
+
+                  {currentUser.email === blog.author && (
+                    <div>
+                      <button
+                        className="editDeleteBtn"
+                        onClick={() =>
+                          handleEdit(blog.id, blog.title, blog.content)
+                        }
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="editDeleteBtn"
+                        onClick={() => handleDelete(blog.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <h3>{blog.title}</h3>
+                  <p>{blog.content}</p>
+                  <p className="author">Author: {blog.author}</p>
                 </div>
               )}
             </div>
@@ -82,7 +106,6 @@ function BlogList() {
               <input
                 type="text"
                 placeholder="Add a comment"
-                value={comment}
                 onChange={(e) => setComment(e.target.value)}
               />
               <button

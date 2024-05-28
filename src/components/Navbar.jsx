@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { useAuth } from "../firebase/AuthContext";
 
 function Navbar() {
-  const { user } = useContext(UserContext);
+  const { currentUser } = useAuth();
 
   return (
     <nav className="navbar">
@@ -17,7 +17,12 @@ function Navbar() {
         <li>
           <Link to="/newpost">New Post</Link>
         </li>
-        {user.username !== "Guest" && <li className="user">{user.username}</li>}
+
+        {currentUser ? (
+          <li className="user">{currentUser.email}</li>
+        ) : (
+          <li className="user"></li>
+        )}
       </ul>
     </nav>
   );
