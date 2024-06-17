@@ -85,6 +85,19 @@ function BlogList() {
                       </button>
                     </div>
                   )}
+                  <div className="commentForm">
+                    <input
+                      type="text"
+                      placeholder="Add a comment"
+                      onChange={(e) => setComment(e.target.value)}
+                    />
+                    <button
+                      className="addCommentBtn"
+                      onClick={() => handleAddComment(blog.id)}
+                    >
+                      Add Comment
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div>
@@ -102,19 +115,6 @@ function BlogList() {
                 <strong>{comment.username}</strong>: {comment.text}
               </p>
             ))}
-            <div className="commentForm">
-              <input
-                type="text"
-                placeholder="Add a comment"
-                onChange={(e) => setComment(e.target.value)}
-              />
-              <button
-                className="addCommentBtn"
-                onClick={() => handleAddComment(blog.id)}
-              >
-                Add Comment
-              </button>
-            </div>
           </div>
         </div>
       ))}

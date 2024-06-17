@@ -6,6 +6,7 @@ import Blog from "./pages/Blog";
 import NewPost from "./pages/NewPost";
 import { BlogProvider } from "./context/BlogContext";
 import { AuthProvider } from "./firebase/AuthContext";
+import PrivateRoutes from "./components/PrivateRoutes";
 
 function App() {
   return (
@@ -15,9 +16,11 @@ function App() {
           <div>
             <Navbar />
             <Routes>
+              <Route element={<PrivateRoutes />}>
+                <Route path="/newpost" element={<NewPost />} />
+              </Route>
               <Route path="/" element={<Home />} />
               <Route path="/blog" element={<Blog />} />
-              <Route path="/newpost" element={<NewPost />} />
             </Routes>
           </div>
         </Router>

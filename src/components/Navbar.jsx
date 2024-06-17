@@ -14,12 +14,13 @@ function Navbar() {
         <li>
           <Link to="/blog">Blog</Link>
         </li>
-        <li>
-          <Link to="/newpost">New Post</Link>
-        </li>
-
         {currentUser ? (
-          <li className="user">{currentUser.email}</li>
+          <>
+            <li>
+              <Link to="/newpost">New Post</Link>
+            </li>
+            <li className="user">{currentUser.email}</li>
+          </>
         ) : (
           <li className="user"></li>
         )}
